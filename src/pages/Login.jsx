@@ -30,16 +30,6 @@ export default class Login extends Component {
 
       return (
         <div>
-          <label htmlFor="email-input">
-            Email:
-            <input
-              data-testid="input-gravatar-email"
-              id="email"
-              name="email"
-              value={ email }
-              onChange={ this.onInputChange }
-            />
-          </label>
 
           <label htmlFor="name-input">
             Nome:
@@ -52,7 +42,27 @@ export default class Login extends Component {
             />
           </label>
 
+          <label htmlFor="email-input">
+            Email:
+            <input
+              data-testid="input-gravatar-email"
+              id="email"
+              name="email"
+              value={ email }
+              onChange={ this.onInputChange }
+            />
+          </label>
+
           <FirstApi validateButton={ this.onValidateButton() } history={ history } />
+
+          <button
+            type="button"
+            data-testid="btn-settings"
+            onClick={ () => history.push('/settings') }
+          >
+            Configurações
+          </button>
+
         </div>
       );
     }
