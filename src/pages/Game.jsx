@@ -6,7 +6,7 @@ class Game extends Component {
     return (
       <div data-testid="settings-title">
         <h1>Game</h1>
-        <Header/>
+        <Header />
       </div>
     );
   }
