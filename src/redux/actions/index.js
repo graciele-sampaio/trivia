@@ -1,6 +1,6 @@
-// export const EXEMPLO = 'EXEMPLO';
+export const SAVE_API_TOKEN = 'SAVE_API_TOKEN';
 
-// export exemploAction = (payload) => ({
-//   type: EXEMPLO,
-//   payload,
-// })
+export const saveApiToken = (token) => ({
+  type: SAVE_API_TOKEN,
+  token,
+});

@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import FirstApi from '../Components/FirstApi';
 
 export default class Login extends Component {
   constructor() {
@@ -16,7 +17,6 @@ export default class Login extends Component {
       this.setState({
         [name]: value,
       });
-      console.log(name, value);
     };
 
     onValidateButton = () => {
@@ -25,7 +25,7 @@ export default class Login extends Component {
     }
 
     render() {
-    //   const { history } = this.props;
+      const { history } = this.props;
       const { email, name } = this.state;
 
       return (
@@ -52,14 +52,7 @@ export default class Login extends Component {
             />
           </label>
 
-          <button
-            type="button"
-            disabled={ this.onValidateButton() }
-            data-testid="btn-play"
-            onClick={  }
-          >
-            Play
-          </button>
+          <FirstApi validateButton={ this.onValidateButton() } history={ history } />
         </div>
       );
     }
