@@ -56,7 +56,7 @@ export default class Login extends Component {
             type="button"
             disabled={ this.onValidateButton() }
             data-testid="btn-play"
-            // onClick={}
+            onClick={  }
           >
             Play
           </button>
