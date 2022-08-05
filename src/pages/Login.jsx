@@ -56,6 +56,8 @@ export default class Login extends Component {
           <FirstApi
             validateButton={ this.onValidateButton() }
             history={ history }
+            email={ email }
+            name={ name }
           />
 
           <button

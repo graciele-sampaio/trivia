@@ -1,3 +1,5 @@
+import md5 from 'crypto-js/md5';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
@@ -33,4 +35,14 @@ class Header extends Component {
   }
 }
 
-export default connect()(Header);
+Header.propTypes = {
+  name: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+};
+
+const mapStateToProps = (store) => ({
+  name: store.player.name,
+  email: store.player.gravatarEmail,
+});
+
+export default connect(mapStateToProps)(Header);
