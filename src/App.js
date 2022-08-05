@@ -1,10 +1,10 @@
 import React from 'react';
-import Login from './pages/Login';
+import Rotas from './components/Rotas';
 
 export default function App() {
   return (
     <div className="App">
-      <Login />
+      <Rotas />
     </div>
   );
 }
