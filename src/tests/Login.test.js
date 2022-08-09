@@ -28,4 +28,14 @@ describe('', () => {
     userEvent.type(fieldEmail, 'alguem@email.com');
     expect(buttonPlay).not.toBeDisabled();
   });
+
+   it('', () => {
+    renderWithRouterAndRedux(<App />);
+
+    const config = screen.getByRole('button', {  name: /configurações/i});
+    userEvent.click(config);
+
+    const textConfig = screen.getByText(/configurações/i);
+    expect(textConfig).toBeInTheDocument();
+  });
 })
