@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Header from '../Components/Header';
+// import Timer from '../Components/Timer';
 
 class Game extends Component {
   state = {
@@ -147,6 +148,7 @@ class Game extends Component {
       <div data-testid="settings-title">
         <h1>Game</h1>
         <Header />
+        {/* <Timer /> */}
         {(load && questions.length > 0)
           ? this.renderQuestion(questions, order)
           : <h1>Carregando...</h1>}
