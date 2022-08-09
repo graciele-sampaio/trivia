@@ -12,7 +12,7 @@ class Ranking extends Component {
       <div>
         <div>Ranking</div>
         <button
-          data-testid=" btn-next"
+          data-testid="btn-go-home"
           type="button"
           onClick={ this.handleClick }
         >
