@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Header from '../Components/Header';
+import './style.css';
 
 class Game extends Component {
   state = {
@@ -55,6 +56,7 @@ class Game extends Component {
     (
       <button
         type="button"
+        onClick={ this.verificationAnswer }
         data-testid={ this.handleDataTestId(0, correctAnswer, 'True') }
         key={ this.handleDataTestId(0, correctAnswer, 'True') }
       >
@@ -64,6 +66,7 @@ class Game extends Component {
     (
       <button
         type="button"
+        onClick={ this.verificationAnswer }
         data-testid={ this.handleDataTestId(1, correctAnswer, 'False') }
         key={ this.handleDataTestId(0, correctAnswer, 'False') }
       >
@@ -72,12 +75,26 @@ class Game extends Component {
     ),
   ])
 
+  verificationAnswer = ({ target }) => {
+    const parent = target.parentElement;
+    const child = parent.children;
+    for (let index = 0; index <= child.length; index += 1) {
+      if (child[index].dataset.testid === 'correct-answer') {
+        child[index].className = 'green';
+        console.log(child);
+      } else {
+        child[index].className = 'red';
+      }
+    }
+  }
+
   multipleQuestion = (question, correctAnswer) => this.shuffleAnswers([
     ...question.incorrect_answers,
     correctAnswer,
   ]).map((item, index) => (
     <button
       type="button"
+      onClick={ this.verificationAnswer }
       key={ this.handleDataTestId(index, correctAnswer, item) }
       data-testid={ this.handleDataTestId(index, correctAnswer, item) }
     >
