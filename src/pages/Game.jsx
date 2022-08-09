@@ -9,6 +9,7 @@ class Game extends Component {
     order: 0,
     load: false,
     answered: false,
+    disabledNextButton: false,
   }
 
   componentDidMount() {
@@ -34,9 +35,11 @@ class Game extends Component {
   }
 
   handleClick = () => {
+    const numberMaxQuestions = 4;
     this.setState(
       (previousState) => ({
-        order: previousState.order + 1,
+        order: previousState.order < numberMaxQuestions ? previousState.order + 1 : 0,
+        disabledNextButton: false,
       }),
     );
   }
@@ -54,7 +57,10 @@ class Game extends Component {
 
   verificationResponse = () => {
     // const { answered } = this.state;
-    this.setState({ answered: true });
+    this.setState({
+      answered: true,
+      disabledNextButton: true,
+    });
   }
 
   changeColor = (item) => {
@@ -92,30 +98,30 @@ class Game extends Component {
     } return { border: '3px solid red' };
   }
 
- booleanQuestion = (correctAnswer) => this.shuffleAnswers([
-   (
-     <button
-       type="button"
-       onClick={ this.verificationResponse }
-       data-testid={ this.handleDataTestId(0, correctAnswer, 'True') }
-       style={ this.changeColorBool(this.handleDataTestId(0, correctAnswer, 'True')) }
-       key={ this.handleDataTestId(0, correctAnswer, 'True') }
-     >
-       True
-     </button>
-   ),
-   (
-     <button
-       type="button"
-       style={ this.changeColorBool(this.handleDataTestId(0, correctAnswer, 'False')) }
-       onClick={ this.verificationResponse }
-       data-testid={ this.handleDataTestId(1, correctAnswer, 'False') }
-       key={ this.handleDataTestId(0, correctAnswer, 'False') }
-     >
-       False
-     </button>
-   ),
- ])
+  booleanQuestion = (correctAnswer) => this.shuffleAnswers([
+    (
+      <button
+        type="button"
+        onClick={ this.verificationResponse }
+        data-testid={ this.handleDataTestId(0, correctAnswer, 'True') }
+        style={ this.changeColorBool(this.handleDataTestId(0, correctAnswer, 'True')) }
+        key={ this.handleDataTestId(0, correctAnswer, 'True') }
+      >
+        True
+      </button>
+    ),
+    (
+      <button
+        type="button"
+        style={ this.changeColorBool(this.handleDataTestId(0, correctAnswer, 'False')) }
+        onClick={ this.verificationResponse }
+        data-testid={ this.handleDataTestId(1, correctAnswer, 'False') }
+        key={ this.handleDataTestId(0, correctAnswer, 'False') }
+      >
+        False
+      </button>
+    ),
+  ]);
 
   renderQuestion = (questions, order) => {
     const question = questions[order];
@@ -136,7 +142,7 @@ class Game extends Component {
   }
 
   render() {
-    const { load, questions, order } = this.state;
+    const { load, questions, order, disabledNextButton } = this.state;
     return (
       <div data-testid="settings-title">
         <h1>Game</h1>
@@ -144,12 +150,14 @@ class Game extends Component {
         {(load && questions.length > 0)
           ? this.renderQuestion(questions, order)
           : <h1>Carregando...</h1>}
-        <button
-          type="button"
-          onClick={ this.handleClick }
-        >
-          Próxima Questão
-        </button>
+        {disabledNextButton && (
+          <button
+            data-testid="btn-next"
+            type="button"
+            onClick={ this.handleClick }
+          >
+            Próxima Questão
+          </button>)}
       </div>
     );
   }
