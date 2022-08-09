@@ -9,6 +9,7 @@ class Game extends Component {
     questions: [],
     order: 0,
     load: false,
+    answered: false,
   }
 
   componentDidMount() {
@@ -52,40 +53,19 @@ class Game extends Component {
     return arrayOrdered;
   }
 
-  booleanQuestion = (correctAnswer) => this.shuffleAnswers([
-    (
-      <button
-        type="button"
-        onClick={ this.verificationAnswer }
-        data-testid={ this.handleDataTestId(0, correctAnswer, 'True') }
-        key={ this.handleDataTestId(0, correctAnswer, 'True') }
-      >
-        True
-      </button>
-    ),
-    (
-      <button
-        type="button"
-        onClick={ this.verificationAnswer }
-        data-testid={ this.handleDataTestId(1, correctAnswer, 'False') }
-        key={ this.handleDataTestId(0, correctAnswer, 'False') }
-      >
-        False
-      </button>
-    ),
-  ])
+  verificationResponse = () => {
+    // const { answered } = this.state;
+    this.setState({ answered: true });
+  }
 
-  verificationAnswer = ({ target }) => {
-    const parent = target.parentElement;
-    const child = parent.children;
-    for (let index = 0; index <= child.length; index += 1) {
-      if (child[index].dataset.testid === 'correct-answer') {
-        child[index].className = 'green';
-        console.log(child);
-      } else {
-        child[index].className = 'red';
-      }
-    }
+  changeColor = (item) => {
+    const { answered, questions, order } = this.state;
+    const option = questions[order];
+    if (!answered) {
+      return { border: 'none' };
+    } if (answered && item === option.correct_answer) {
+      return { border: '3px solid rgb(6, 240, 15' };
+    } return { border: '3px solid red' };
   }
 
   multipleQuestion = (question, correctAnswer) => this.shuffleAnswers([
@@ -94,13 +74,49 @@ class Game extends Component {
   ]).map((item, index) => (
     <button
       type="button"
-      onClick={ this.verificationAnswer }
+      style={ this.changeColor(item) }
+      onClick={ this.verificationResponse }
       key={ this.handleDataTestId(index, correctAnswer, item) }
       data-testid={ this.handleDataTestId(index, correctAnswer, item) }
     >
       {item}
     </button>
   ))
+
+  changeColorBool = (correctAnswer) => {
+    const { answered } = this.state;
+    if (!answered) {
+      return { border: 'none' };
+    }
+    if (correctAnswer === 'correct-answer' && answered) {
+      return { border: '3px solid rgb(6, 240, 15' };
+    } return { border: '3px solid red' };
+  }
+
+ booleanQuestion = (correctAnswer) => this.shuffleAnswers([
+   (
+     <button
+       type="button"
+       onClick={ this.verificationResponse }
+       data-testid={ this.handleDataTestId(0, correctAnswer, 'True') }
+       style={ this.changeColorBool(this.handleDataTestId(0, correctAnswer, 'True')) }
+       key={ this.handleDataTestId(0, correctAnswer, 'True') }
+     >
+       True
+     </button>
+   ),
+   (
+     <button
+       type="button"
+       style={ this.changeColorBool(this.handleDataTestId(0, correctAnswer, 'False')) }
+       onClick={ this.verificationResponse }
+       data-testid={ this.handleDataTestId(1, correctAnswer, 'False') }
+       key={ this.handleDataTestId(0, correctAnswer, 'False') }
+     >
+       False
+     </button>
+   ),
+ ])
 
   renderQuestion = (questions, order) => {
     const question = questions[order];
@@ -122,7 +138,6 @@ class Game extends Component {
 
   render() {
     const { load, questions, order } = this.state;
-
     return (
       <div data-testid="settings-title">
         <h1>Game</h1>
