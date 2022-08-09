@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Header from '../Components/Header';
+import { savePlayerScore } from '../redux/actions';
 
 class Game extends Component {
   state = {
@@ -52,8 +53,14 @@ class Game extends Component {
     return arrayOrdered;
   }
 
-  verificationResponse = () => {
-    // const { answered } = this.state;
+  verificationResponse = (target, correctAnswer) => {
+    const { answered } = this.state;
+    const { updateScore } = this.props;
+    const answeredCorrectly = target.innerHTML === correctAnswer;
+    // Preciso acrescentar lógica de timer e dificuldade
+    // const points = 10 + (timer * dificuldade)
+    const points = 10;
+    if (answeredCorrectly && !answered) updateScore(points);
     this.setState({ answered: true });
   }
 
@@ -74,7 +81,7 @@ class Game extends Component {
     <button
       type="button"
       style={ this.changeColor(item) }
-      onClick={ this.verificationResponse }
+      onClick={ ({ target }) => this.verificationResponse(target, correctAnswer) }
       key={ this.handleDataTestId(index, correctAnswer, item) }
       data-testid={ this.handleDataTestId(index, correctAnswer, item) }
     >
@@ -96,7 +103,7 @@ class Game extends Component {
    (
      <button
        type="button"
-       onClick={ this.verificationResponse }
+       onClick={ ({ target }) => this.verificationResponse(target, correctAnswer) }
        data-testid={ this.handleDataTestId(0, correctAnswer, 'True') }
        style={ this.changeColorBool(this.handleDataTestId(0, correctAnswer, 'True')) }
        key={ this.handleDataTestId(0, correctAnswer, 'True') }
@@ -160,10 +167,15 @@ Game.propTypes = {
     push: PropTypes.func,
   }).isRequired,
   getToken: PropTypes.string.isRequired,
+  updateScore: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (store) => ({
   getToken: store.apiToken.token,
 });
 
-export default connect(mapStateToProps)(Game);
+const mapDispatchToProps = (dispatch) => ({
+  updateScore: (score) => dispatch(savePlayerScore(score)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Game);
