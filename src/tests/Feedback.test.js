@@ -1,43 +1,69 @@
-import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import React from 'react';
+import { screen } from '@testing-library/react';
+import App from '../App';
 import Feedback from '../pages/Feedback';
-import renderWithRouterAndRedux from "./helpers/renderWithRouterAndRedux";
+import userEvent from '@testing-library/user-event';
+import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux';
 
 describe('', () => {
- test('', () => {
-    const { history } = renderWithRouterAndRedux(<Feedback />)
-    history.push('/feedback')
-    const couldBeBetter = screen.getByText(/Could be better.../i)
-    expect(couldBeBetter).toBeDefined()
-  })
+    test('', () => {
+        const {history} = renderWithRouterAndRedux(<App />);
+        history.push('/feedback');
+        const btnPlayAgain = screen.getByTestId('btn-play-again');
+        userEvent.click(btnPlayAgain);
+        const inputPlayerName = screen.getByTestId('input-player-name');
+        expect(inputPlayerName).toBeInTheDocument();
+    })
 
   test('', () => {
-    const { history } = renderWithRouterAndRedux(<Feedback />)
-    history.push('/feedback')
-    const playerName = screen.getByTestId('header-player-name')
-    expect(playerName).toBeInTheDocument()
-  })
+          renderWithRouterAndRedux(<Feedback />);
+          const idFeedbackText = screen.getByTestId('feedback-text');
+          expect(idFeedbackText).toBeDefined();
+      })
 
-  test('', () => {
-    const { history } = renderWithRouterAndRedux(<Feedback />)
-    history.push('/feedback')
-    const feedbackText = screen.getByTestId('feedback-text')
-    expect(feedbackText).toBeInTheDocument()
-  })
+    test('', () => {
+        renderWithRouterAndRedux(<Feedback />);
+        const headerPlayerName = screen.getByTestId('header-player-name');
+        expect(headerPlayerName).toBeInTheDocument();
+    })
+     test('', () => {
+        renderWithRouterAndRedux(<Feedback />);
+        const btnPlayAgain = screen.getByTestId('btn-play-again');
+        expect(btnPlayAgain).toBeInTheDocument();
 
-  test('', () => {
-    const { history } = renderWithRouterAndRedux(<Feedback />)
-    history.push('/feedback')
-    const profilePicture = screen.getByTestId('header-profile-picture')
-    expect(profilePicture).toBeInTheDocument()
-  })
-  
-  test('', () => {
-    const { history } = renderWithRouterAndRedux(<Feedback />)
-    history.push('/feedback')
-    const playAgain = screen.getByTestId('btn-play-again')
-    userEvent.click(playAgain)
-    expect(history.location.pathname).toBe('/')
-  })
+        const btnRanking = screen.getByTestId('btn-ranking');
+        expect(btnRanking).toBeInTheDocument();
+
+    })   
+    test('', () => {
+        const {history} = renderWithRouterAndRedux(<App />);
+        history.push('/feedback');
+        const btnRanking = screen.getByTestId('btn-ranking');
+        userEvent.click(btnRanking);
+        const title = screen.getByTestId('ranking-title');
+        expect(title).toBeInTheDocument();
+        
+    })    
+    test('', () => {
+        renderWithRouterAndRedux(<Feedback />);
+        const headerScore = screen.getByTestId('header-score');
+        expect(headerScore).toBeInTheDocument();
+    })
+    test('', () => {
+        renderWithRouterAndRedux(<Feedback />);
+        const feedbackTotalScore = screen.getByTestId('feedback-total-score');
+        expect(feedbackTotalScore).toBeInTheDocument();
+    })
+
+    test('', () => {
+        renderWithRouterAndRedux(<Feedback />);
+        const eedbackTotalScore = screen.getByTestId('feedback-total-score');
+        expect(eedbackTotalScore).toBeInTheDocument();
+    })   
+
+    test('', () => {
+        renderWithRouterAndRedux(<Feedback />);
+        const feedbackTotalQuestion = screen.getByTestId('feedback-total-question');
+        expect(feedbackTotalQuestion).toBeInTheDocument();
+    })     
 })
