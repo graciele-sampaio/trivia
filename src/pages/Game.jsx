@@ -2,19 +2,25 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Header from '../Components/Header';
-// import Timer from '../Components/Timer';
+import '../styles/Game.css';
 
 class Game extends Component {
   state = {
+    timer: 30,
+    // answeringTime: 0,
     questions: [],
     order: 0,
     load: false,
     answered: false,
-    disabledNextButton: false,
-  }
+    showNextButton: false,
+  };
 
   componentDidMount() {
     this.requestQuests();
+  }
+
+  componentDidUpdate() {
+    this.handleTimer();
   }
 
   requestQuests = async () => {
@@ -23,143 +29,125 @@ class Game extends Component {
     const json = await response.json();
     if (json.response_code === 0) this.sucessRequest(json.results);
     if (json.response_code !== 0) this.failedRequest();
-  }
+  };
 
   sucessRequest = (results) => {
     this.setState({ questions: results, load: true });
-  }
+  };
 
   failedRequest = () => {
     const { history } = this.props;
     localStorage.removeItem('token');
     history.push('/');
-  }
-
-  handleClick = () => {
-    const numberMaxQuestions = 4;
-    this.setState(
-      (previousState) => ({
-        order: previousState.order < numberMaxQuestions ? previousState.order + 1 : 0,
-        disabledNextButton: false,
-      }),
-    );
-  }
-
-  handleDataTestId = (index, correctAnswer, currentAnswer) => {
-    if (currentAnswer === correctAnswer) { return 'correct-answer'; }
-    return `wrong-answer-${index}`;
   };
 
-  shuffleAnswers = (array) => {
-    const number = 0.5;
-    const arrayOrdered = array.sort(() => (Math.round(Math.random()) - number));
-    return arrayOrdered;
-  }
+  handleNextQuestion = () => {
+    const numberMaxQuestions = 4;
+    this.setState((previousState) => ({
+      order:
+        previousState.order < numberMaxQuestions ? previousState.order + 1 : 0,
+      showNextButton: false,
+      answered: false,
+      timer: 30,
+    }));
+  };
 
-  verificationResponse = () => {
-    // const { answered } = this.state;
-    this.setState({
-      answered: true,
-      disabledNextButton: true,
+  handleQuestionResults = () => {
+    const { questions, order } = this.state;
+    const allOptions = document.querySelectorAll('.question');
+    allOptions.forEach((option) => {
+      const isCorrect = option.innerText === questions[order].correct_answer;
+      if (isCorrect) option.classList.add('rigth-question');
+      if (!isCorrect) option.classList.add('wrong-question');
     });
   }
 
-  changeColor = (item) => {
-    const { answered, questions, order } = this.state;
-    const option = questions[order];
-    if (!answered) {
-      return { border: 'none' };
-    } if (answered && item === option.correct_answer) {
-      return { border: '3px solid rgb(6, 240, 15' };
-    } return { border: '3px solid red' };
+  handleClick = () => {
+    this.setState({
+      showNextButton: true,
+      answered: true,
+    });
+    this.handleQuestionResults();
   }
 
-  multipleQuestion = (question, correctAnswer) => this.shuffleAnswers([
-    ...question.incorrect_answers,
-    correctAnswer,
-  ]).map((item, index) => (
-    <button
-      type="button"
-      style={ this.changeColor(item) }
-      onClick={ this.verificationResponse }
-      key={ this.handleDataTestId(index, correctAnswer, item) }
-      data-testid={ this.handleDataTestId(index, correctAnswer, item) }
-    >
-      {item}
-    </button>
-  ))
-
-  changeColorBool = (correctAnswer) => {
-    const { answered } = this.state;
-    if (!answered) {
-      return { border: 'none' };
+  handleDataTestId = (currQuestion, index) => {
+    const { questions, order } = this.state;
+    const correctAnswer = questions[order].correct_answer;
+    if (currQuestion === correctAnswer) {
+      return 'correct-answer';
     }
-    if (correctAnswer === 'correct-answer' && answered) {
-      return { border: '3px solid rgb(6, 240, 15' };
-    } return { border: '3px solid red' };
+    return `wrong-answer-${index}`;
+  };
+
+  handleQuestions = (allQuestions) => {
+    const { answered, timer } = this.state;
+    return allQuestions.map((currQuestion, index) => (
+      <button
+        type="button"
+        onClick={ ({ target }) => this.handleClick(target, currQuestion) }
+        data-testid={ this.handleDataTestId(currQuestion, index) }
+        key={ currQuestion }
+        disabled={ answered || timer === 0 }
+        className="question"
+      >
+        { currQuestion }
+      </button>
+    ));
   }
 
-  booleanQuestion = (correctAnswer) => this.shuffleAnswers([
-    (
-      <button
-        type="button"
-        onClick={ this.verificationResponse }
-        data-testid={ this.handleDataTestId(0, correctAnswer, 'True') }
-        style={ this.changeColorBool(this.handleDataTestId(0, correctAnswer, 'True')) }
-        key={ this.handleDataTestId(0, correctAnswer, 'True') }
-      >
-        True
-      </button>
-    ),
-    (
-      <button
-        type="button"
-        style={ this.changeColorBool(this.handleDataTestId(0, correctAnswer, 'False')) }
-        onClick={ this.verificationResponse }
-        data-testid={ this.handleDataTestId(1, correctAnswer, 'False') }
-        key={ this.handleDataTestId(0, correctAnswer, 'False') }
-      >
-        False
-      </button>
-    ),
-  ]);
+  shuffleAnswers = (question) => {
+    const allQuestions = [...question.incorrect_answers, question.correct_answer];
+    const number = 0.5;
+    const shuffledArray = allQuestions.sort(() => Math.round(Math.random()) - number);
+    return this.handleQuestions(shuffledArray);
+  };
 
   renderQuestion = (questions, order) => {
     const question = questions[order];
-    const correctAnswer = question.correct_answer;
     return (
       <div>
         <p data-testid="question-category">{question.category}</p>
         <p data-testid="question-text">{`Pergunta: ${question.question}`}</p>
         <span data-testid="answer-options">
-          {
-            (question.type === 'multiple')
-              ? this.multipleQuestion(question, correctAnswer)
-              : this.booleanQuestion(correctAnswer)
-          }
+          { this.shuffleAnswers(question) }
         </span>
       </div>
     );
+  };
+
+  handleTimer = () => {
+    const { timer, answered } = this.state;
+    if (timer > 0 && !answered) {
+      this.timer = setTimeout(() => {
+        this.setState({
+          timer: timer - 1,
+        });
+      }, '1000');
+    }
+    if (answered || timer === 0) clearInterval(this.timer);
   }
 
   render() {
-    const { load, questions, order, disabledNextButton } = this.state;
+    const { load, questions, order, showNextButton, timer } = this.state;
     return (
       <div data-testid="settings-title">
         <h1>Game</h1>
         <Header />
-        {/* <Timer /> */}
-        {(load && questions.length > 0)
-          ? this.renderQuestion(questions, order)
-          : <h1>Carregando...</h1>}
-        {disabledNextButton && (
+        <h2>{timer}</h2>
+        {load && questions.length > 0 ? (
+          this.renderQuestion(questions, order)
+        ) : (
+          <h1>Carregando...</h1>
+        )}
+        {showNextButton && (
           <button
             data-testid="btn-next"
             type="button"
-            onClick={ this.handleClick }
+            onClick={ this.handleNextQuestion }
           >
             Próxima Questão
-          </button>)}
+          </button>
+        )}
       </div>
     );
   }
