@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import Header from '../Components/Header';
 import '../styles/Game.css';
 import { savePlayerScore, saveAssertions } from '../redux/actions';
@@ -9,7 +9,6 @@ import { savePlayerScore, saveAssertions } from '../redux/actions';
 class Game extends Component {
   state = {
     timer: 30,
-    // answeringTime: 0,
     questions: [],
     order: 0,
     load: false,
@@ -154,7 +153,14 @@ class Game extends Component {
   }
 
   render() {
-    const { load, questions, order, showNextButton, timer, lastQuestion } = this.state;
+    const {
+      load,
+      questions,
+      order,
+      showNextButton,
+      timer,
+      lastQuestion,
+    } = this.state;
     return (
       <div data-testid="settings-title">
         <h1>Game</h1>
