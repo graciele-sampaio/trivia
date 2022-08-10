@@ -22,8 +22,11 @@ class Feedback extends Component {
   };
 
   render() {
+    const { totalAssertions, totalScore } = this.props;
+
     return (
       <div data-testid="settings-title">
+        <Header />
         <h1 data-testid="feedback-text">Feedback</h1>
         <button
           data-testid="btn-play-again"
@@ -32,6 +35,15 @@ class Feedback extends Component {
         >
           Jogar novamente
         </button>
+        <p data-testid="feedback-text">{this.message()}</p>
+        <p>
+          {'Final Score: '}
+          <span data-testid="feedback-total-score">{totalScore}</span>
+        </p>
+        <p>
+          {'Total Assertions: '}
+          <span data-testid="feedback-total-question">{totalAssertions}</span>
+        </p>
         <button
           type="button"
           data-testid="btn-ranking"
@@ -39,8 +51,6 @@ class Feedback extends Component {
         >
           Ranking
         </button>
-        <Header />
-        <p data-testid="feedback-text">{this.message()}</p>
       </div>
     );
   }
@@ -51,10 +61,12 @@ Feedback.propTypes = {
     push: PropTypes.func,
   }).isRequired,
   totalAssertions: PropTypes.number.isRequired,
+  totalScore: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = (store) => ({
   totalAssertions: store.player.assertions,
+  totalScore: store.player.score,
 });
 
 export default connect(mapStateToProps)(Feedback);
