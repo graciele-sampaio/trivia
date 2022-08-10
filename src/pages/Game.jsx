@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Header from '../Components/Header';
 import '../styles/Game.css';
-import { savePlayerScore } from '../redux/actions';
+import { savePlayerScore, saveAssertions } from '../redux/actions';
 
 class Game extends Component {
   state = {
@@ -77,10 +77,11 @@ class Game extends Component {
 
   handleScore = (difficulty) => {
     const { timer } = this.state;
-    const { updateScore } = this.props;
+    const { updateScore, updateAssertions } = this.props;
     const currDifficulty = this.getDifficultyMultiplier(difficulty);
     const defaultPoints = 10;
     updateScore(defaultPoints + (timer * currDifficulty));
+    updateAssertions();
   }
 
   handleClick = (target) => {
@@ -185,6 +186,7 @@ Game.propTypes = {
   }).isRequired,
   getToken: PropTypes.string.isRequired,
   updateScore: PropTypes.func.isRequired,
+  updateAssertions: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (store) => ({
@@ -193,6 +195,7 @@ const mapStateToProps = (store) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   updateScore: (score) => dispatch(savePlayerScore(score)),
+  updateAssertions: () => dispatch(saveAssertions()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);
