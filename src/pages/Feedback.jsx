@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import Header from '../Components/Header';
 
 class Feedback extends Component {
@@ -17,6 +16,11 @@ class Feedback extends Component {
     if (totalAssertions >= mediumResult) return 'Well Done!';
   }
 
+  handleGoRanking = () => {
+    const { history } = this.props;
+    history.push('/ranking');
+  };
+
   render() {
     return (
       <div data-testid="settings-title">
@@ -27,6 +31,13 @@ class Feedback extends Component {
           onClick={ this.handlePlayAgain }
         >
           Jogar novamente
+        </button>
+        <button
+          type="button"
+          data-testid="btn-ranking"
+          onClick={ this.handleGoRanking }
+        >
+          Ranking
         </button>
         <Header />
         <p data-testid="feedback-text">{this.message()}</p>
