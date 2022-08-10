@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Header from '../Components/Header';
 import '../styles/Game.css';
+import { savePlayerScore } from '../redux/actions';
 
 class Game extends Component {
   state = {
@@ -62,7 +63,24 @@ class Game extends Component {
     });
   }
 
-  handleClick = () => {
+  getDifficultyMultiplier = (difficulty) => {
+    if (difficulty === 'easy') return 1;
+    if (difficulty === 'medium') return 2;
+    if (difficulty === 'hard') return 1;
+  };
+
+  handleScore = (difficulty) => {
+    const { timer } = this.state;
+    const { updateScore } = this.props;
+    const currDifficulty = this.getDifficultyMultiplier(difficulty);
+    const defaultPoints = 10;
+    updateScore(defaultPoints + (timer * currDifficulty));
+  }
+
+  handleClick = (target) => {
+    const { questions, order, answered } = this.state;
+    const answeredCorrectly = target.innerHTML === questions[order].correct_answer;
+    if (answeredCorrectly && !answered) this.handleScore(questions[order].difficulty);
     this.setState({
       showNextButton: true,
       answered: true,
@@ -158,10 +176,15 @@ Game.propTypes = {
     push: PropTypes.func,
   }).isRequired,
   getToken: PropTypes.string.isRequired,
+  updateScore: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (store) => ({
   getToken: store.apiToken.token,
 });
 
-export default connect(mapStateToProps)(Game);
+const mapDispatchToProps = (dispatch) => ({
+  updateScore: (score) => dispatch(savePlayerScore(score)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Game);
