@@ -45,8 +45,8 @@ class Feedback extends Component {
           <span data-testid="feedback-total-question">{totalAssertions}</span>
         </p>
         <button
-          type="button"
           data-testid="btn-ranking"
+          type="button"
           onClick={ this.handleGoRanking }
         >
           Ranking
