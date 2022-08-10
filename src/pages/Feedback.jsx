@@ -35,8 +35,7 @@ class Feedback extends Component {
   }
 
   handlePlayAgain = () => {
-    const { history, clearData } = this.props;
-    clearData();
+    const { history } = this.props;
     history.push('/');
   }
 
