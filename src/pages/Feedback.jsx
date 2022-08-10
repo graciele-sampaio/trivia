@@ -16,6 +16,11 @@ class Feedback extends Component {
     if (totalAssertions >= mediumResult) return 'Well Done!';
   }
 
+  handleGoRanking = () => {
+    const { history } = this.props;
+    history.push('/ranking');
+  };
+
   render() {
     const { totalAssertions, totalScore } = this.props;
 
@@ -39,6 +44,13 @@ class Feedback extends Component {
           {'Total Assertions: '}
           <span data-testid="feedback-total-question">{totalAssertions}</span>
         </p>
+        <button
+          data-testid="btn-ranking"
+          type="button"
+          onClick={ this.handleGoRanking }
+        >
+          Ranking
+        </button>
       </div>
     );
   }
