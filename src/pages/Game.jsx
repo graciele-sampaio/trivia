@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Header from '../Components/Header';
 import '../styles/Game.css';
-import { savePlayerScore } from '../redux/actions';
+import { savePlayerScore, saveAssertions } from '../redux/actions';
 
 class Game extends Component {
   state = {
@@ -13,6 +14,7 @@ class Game extends Component {
     load: false,
     answered: false,
     showNextButton: false,
+    lastQuestion: false,
   };
 
   componentDidMount() {
@@ -46,6 +48,7 @@ class Game extends Component {
     this.setState((previousState) => ({
       order:
         previousState.order < numberMaxQuestions ? previousState.order + 1 : 0,
+      lastQuestion: previousState.order === numberMaxQuestions,
       showNextButton: false,
       answered: false,
       timer: 30,
@@ -73,10 +76,11 @@ class Game extends Component {
 
   handleScore = (difficulty) => {
     const { timer } = this.state;
-    const { updateScore } = this.props;
+    const { updateScore, updateAssertions } = this.props;
     const currDifficulty = this.getDifficultyMultiplier(difficulty);
     const defaultPoints = 10;
     updateScore(defaultPoints + (timer * currDifficulty));
+    updateAssertions();
   }
 
   handleClick = (target) => {
@@ -127,7 +131,8 @@ class Game extends Component {
     return (
       <div>
         <p data-testid="question-category">{question.category}</p>
-        <p data-testid="question-text">{`Pergunta: ${question.question}`}</p>
+        <p>Pergunta :</p>
+        <p data-testid="question-text">{question.question}</p>
         <span data-testid="answer-options">
           { this.shuffleAnswers(question) }
         </span>
@@ -148,12 +153,13 @@ class Game extends Component {
   }
 
   render() {
-    const { load, questions, order, showNextButton, timer } = this.state;
+    const { load, questions, order, showNextButton, timer, lastQuestion } = this.state;
     return (
       <div data-testid="settings-title">
         <h1>Game</h1>
         <Header />
         <h2>{timer}</h2>
+        { lastQuestion && <Redirect to="/feedback" /> }
         {load && questions.length > 0 ? (
           this.renderQuestion(questions, order)
         ) : (
@@ -179,6 +185,7 @@ Game.propTypes = {
   }).isRequired,
   getToken: PropTypes.string.isRequired,
   updateScore: PropTypes.func.isRequired,
+  updateAssertions: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (store) => ({
@@ -187,6 +194,7 @@ const mapStateToProps = (store) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   updateScore: (score) => dispatch(savePlayerScore(score)),
+  updateAssertions: () => dispatch(saveAssertions()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);
