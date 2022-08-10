@@ -2,6 +2,7 @@ import {
   SAVE_DATA_USER,
   SAVE_PLAYER_SCORE,
   SAVE_ASSERTIONS,
+  CLEAR_CURRENT_DATA,
 } from '../actions';
 
 const INITIAL_STATE = {
@@ -28,6 +29,14 @@ const player = (state = INITIAL_STATE, action) => {
     return {
       ...state,
       assertions: state.assertions + 1,
+    };
+  case CLEAR_CURRENT_DATA:
+    return {
+      ...state,
+      name: '',
+      assertions: 0,
+      score: 0,
+      gravatarEmail: '',
     };
   default:
     return state;

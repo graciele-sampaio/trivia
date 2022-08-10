@@ -27,8 +27,8 @@ class Ranking extends Component {
 
   render() {
     return (
-      <div>
-        <div>Ranking</div>
+      <div data-testid="ranking-title">
+        <h1>Ranking</h1>
         {this.loadUsersScore()}
         <button
           data-testid="btn-go-home"
