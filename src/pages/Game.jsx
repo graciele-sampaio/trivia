@@ -8,7 +8,6 @@ import { savePlayerScore } from '../redux/actions';
 class Game extends Component {
   state = {
     timer: 30,
-    // answeringTime: 0,
     questions: [],
     order: 0,
     load: false,
@@ -64,9 +63,12 @@ class Game extends Component {
   }
 
   getDifficultyMultiplier = (difficulty) => {
-    if (difficulty === 'easy') return 1;
-    if (difficulty === 'medium') return 2;
-    if (difficulty === 'hard') return 1;
+    const easyPoints = 1;
+    const mediumPoints = 2;
+    const hardPoints = 3;
+    if (difficulty === 'easy') return easyPoints;
+    if (difficulty === 'medium') return mediumPoints;
+    if (difficulty === 'hard') return hardPoints;
   };
 
   handleScore = (difficulty) => {
